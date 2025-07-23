@@ -56,9 +56,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('status-message').textContent = 
       profile.statusMessage || 'ไม่ได้ตั้งค่าสถานะ';
     
-    // ดึงอีเมลและเบอร์โทรศัพท์จาก LINE (ถ้ามี)
+    // ดึงอีเมลจาก LINE (ถ้ามี)
     const lineEmail = idToken?.email || '';
-    const linePhone = idToken?.phone_number || '';
     
     // ส่วนจัดการอีเมล
     const lineEmailInfo = document.getElementById('line-email-info');
@@ -70,18 +69,6 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('email').classList.add('readonly-input');
     } else {
       lineEmailInfo.style.display = 'none';
-    }
-    
-    // ส่วนจัดการเบอร์โทรศัพท์
-    const linePhoneInfo = document.getElementById('line-phone-info');
-    if (linePhone) {
-      document.getElementById('phone').value = linePhone;
-      document.getElementById('line-phone-value').textContent = linePhone;
-      linePhoneInfo.style.display = 'block';
-      document.getElementById('phone').readOnly = true;
-      document.getElementById('phone').classList.add('readonly-input');
-    } else {
-      linePhoneInfo.style.display = 'none';
     }
     
     // แสดงรูปโปรไฟล์ (ถ้ามี)
@@ -106,7 +93,6 @@ document.addEventListener('DOMContentLoaded', function() {
         pictureUrl: profile.pictureUrl || '',
         statusMessage: profile.statusMessage || '',
         email: document.getElementById('email').value || lineEmail,
-        phone: document.getElementById('phone').value || linePhone,
         comments: document.getElementById('comments').value,
         timestamp: new Date().toISOString()
       };
