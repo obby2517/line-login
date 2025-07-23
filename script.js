@@ -109,10 +109,21 @@ document.addEventListener('DOMContentLoaded', function() {
           submitBtn.innerHTML = '<span style="display: inline-block; margin-right: 8px;">✓</span> ส่งข้อมูลสำเร็จ!';
           submitBtn.style.backgroundColor = 'var(--success-color)';
           
-          // ปิดหน้าต่างหลังจาก 2 วินาที
+          // แสดงข้อความแจ้งเตือนก่อนปิด
+          const successMessage = document.createElement('div');
+          successMessage.className = 'success-message';
+          successMessage.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#4CAF50" style="vertical-align: middle; margin-right: 8px;">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+            บันทึกข้อมูลสำเร็จ หน้าต่างจะปิดอัตโนมัติใน 3 วินาที...
+          `;
+          submitBtn.parentNode.insertBefore(successMessage, submitBtn.nextSibling);
+          
+          // ปิดหน้าต่างหลังจาก 3 วินาที
           setTimeout(() => {
             liff.closeWindow();
-          }, 2000);
+          }, 3000);
         })
         .catch(error => {
           console.error('Error:', error);
