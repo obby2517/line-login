@@ -45,35 +45,18 @@ function handleLIFFInit() {
 // ฟังก์ชันจัดการข้อมูลโปรไฟล์
 function handleProfileFetch([profile, idToken]) {
   hideLoading();
-  displayProfile(profile, idToken);
-  setupForm(profile, idToken?.email || '');
+  displayProfile(profile);
+  setupForm(profile);
 }
 
 // ฟังก์ชันแสดงข้อมูลโปรไฟล์
-function displayProfile(profile, idToken) {
+function displayProfile(profile) {
   document.getElementById('display-name').textContent = profile.displayName;
   document.getElementById('user-id').textContent = profile.userId;
   document.getElementById('status-message').textContent = 
     profile.statusMessage || 'ไม่ได้ตั้งค่าสถานะ';
 
-  setupEmailField(idToken?.email || '');
   setupProfileImage(profile.pictureUrl);
-}
-
-// ฟังก์ชันตั้งค่าฟิลด์อีเมล
-function setupEmailField(lineEmail) {
-  const lineEmailInfo = document.getElementById('line-email-info');
-  const emailInput = document.getElementById('email');
-  
-  if (lineEmail) {
-    emailInput.value = lineEmail;
-    document.getElementById('line-email-value').textContent = lineEmail;
-    lineEmailInfo.style.display = 'block';
-    emailInput.readOnly = true;
-    emailInput.classList.add('readonly-input');
-  } else {
-    lineEmailInfo.style.display = 'none';
-  }
 }
 
 // ฟังก์ชันตั้งค่ารูปโปรไฟล์
@@ -87,16 +70,16 @@ function setupProfileImage(pictureUrl) {
 }
 
 // ฟังก์ชันตั้งค่าฟอร์ม
-function setupForm(profile, lineEmail) {
+function setupForm(profile) {
   document.getElementById('additional-form').addEventListener('submit', (e) => {
     e.preventDefault();
-    handleFormSubmit(profile, lineEmail);
+    handleFormSubmit(profile);
   });
 }
 
 // ฟังก์ชันจัดการการส่งฟอร์ม
-function handleFormSubmit(profile, lineEmail) {
-  const formData = prepareFormData(profile, lineEmail);
+function handleFormSubmit(profile) {
+  const formData = prepareFormData(profile);
   const submitBtn = document.querySelector('button[type="submit"]');
   
   updateButtonState(submitBtn, 'loading', 'กำลังส่งข้อมูล...');
@@ -106,14 +89,13 @@ function handleFormSubmit(profile, lineEmail) {
     .catch(error => handleSubmitError(submitBtn, error));
 }
 
-// ฟังก์ชันเตรียมข้อมูลฟอร์ม
-function prepareFormData(profile, lineEmail) {
+// ฟังก์ชันเตรียมข้อมูลฟอร์ม (เอา email ออก)
+function prepareFormData(profile) {
   return {
     lineUserId: profile.userId,
     displayName: profile.displayName,
     pictureUrl: profile.pictureUrl || '',
     statusMessage: profile.statusMessage || '',
-    email: document.getElementById('email').value || lineEmail,
     comments: document.getElementById('comments').value,
     timestamp: new Date().toISOString()
   };
