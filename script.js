@@ -81,15 +81,18 @@ function setupForm(profile) {
 function handleFormSubmit(profile) {
   const formData = prepareFormData(profile);
   const submitBtn = document.querySelector('button[type="submit"]');
+  const submitLoading = document.getElementById('submit-loading');
   
-  updateButtonState(submitBtn, 'loading', 'กำลังส่งข้อมูล...');
+  // Hide form and show loading
+  document.getElementById('form-section').style.display = 'none';
+  submitLoading.style.display = 'block';
   
   sendToGoogleSheets(formData)
-    .then(() => handleSubmitSuccess(submitBtn))
-    .catch(error => handleSubmitError(submitBtn, error));
+    .then(() => handleSubmitSuccess(submitBtn, submitLoading))
+    .catch(error => handleSubmitError(submitBtn, error, submitLoading));
 }
 
-// ฟังก์ชันเตรียมข้อมูลฟอร์ม (เอา email ออก)
+// ฟังก์ชันเตรียมข้อมูลฟอร์ม
 function prepareFormData(profile) {
   return {
     lineUserId: profile.userId,
@@ -102,15 +105,18 @@ function prepareFormData(profile) {
 }
 
 // ฟังก์ชันจัดการการส่งข้อมูลสำเร็จ
-function handleSubmitSuccess(submitBtn) {
+function handleSubmitSuccess(submitBtn, submitLoading) {
+  submitLoading.style.display = 'none';
   updateButtonState(submitBtn, 'success', 'ส่งข้อมูลสำเร็จ!');
   showSuccessMessage(submitBtn);
   setTimeout(() => liff.closeWindow(), 3000);
 }
 
 // ฟังก์ชันจัดการข้อผิดพลาดในการส่งข้อมูล
-function handleSubmitError(submitBtn, error) {
+function handleSubmitError(submitBtn, error, submitLoading) {
   console.error('Error:', error);
+  submitLoading.style.display = 'none';
+  document.getElementById('form-section').style.display = 'block';
   updateButtonState(submitBtn, 'error', 'ส่งข้อมูลไม่สำเร็จ');
   showErrorMessage(submitBtn, error);
   resetButtonAfterDelay(submitBtn);
@@ -125,7 +131,9 @@ function updateButtonState(button, state, text) {
   };
   
   button.innerHTML = `${icons[state]} ${text}`;
-  button.style.backgroundColor = `var(--${state}-color)`;
+  button.style.backgroundColor = state === 'error' ? 'var(--error-color)' : 
+                               state === 'success' ? 'var(--success-color)' : 
+                               'var(--primary-color)';
   button.disabled = state === 'loading';
 }
 
